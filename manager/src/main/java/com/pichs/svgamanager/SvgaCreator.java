@@ -9,9 +9,6 @@ import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.OnLifecycleEvent;
 
-
-import org.jetbrains.annotations.NotNull;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +35,7 @@ public class SvgaCreator implements SvgaCallback, LifecycleObserver {
     // 队列(线程安全)，Priority 越小优先级越高。
     private final PriorityBlockingQueue<SvgaInfo> mSvgaQueue = new PriorityBlockingQueue<>(1, (d1, d2) -> Long.compare(d1.getPriority(), d2.getPriority()));
 
-    public SvgaCreator(@NotNull AppCompatActivity activity) {
+    public SvgaCreator(AppCompatActivity activity) {
         if (null == activity) {
             throw new RuntimeException("SvgaManager2: activity can not be null reference");
         }
@@ -50,7 +47,8 @@ public class SvgaCreator implements SvgaCallback, LifecycleObserver {
      */
     private final Map<AppCompatActivity, View.OnClickListener> mCallbackMap = new HashMap<>();
 
-    private SvgaCreator with(@NotNull AppCompatActivity activity) {
+    private SvgaCreator with(AppCompatActivity activity) {
+        if (activity == null) return this;
         // 换页面了吊起了动画，则重置状态
         if (this.mActivity == null) {
             this.mActivity = activity;
@@ -83,7 +81,7 @@ public class SvgaCreator implements SvgaCallback, LifecycleObserver {
      */
     private void createDialogIfNotExist() {
         SvgaUtils.runOnUiThread(() -> {
-            if (mSvgaDialog == null) {
+            if (mSvgaDialog == null && mActivity != null) {
                 mSvgaDialog = new SvgaDialog(mActivity).setCallback(SvgaCreator.this)
                         .setOnBackClickListener(view -> {
                             if (mActivity != null) {
@@ -107,7 +105,12 @@ public class SvgaCreator implements SvgaCallback, LifecycleObserver {
      */
     public SvgaCreator addBackClickListener(View.OnClickListener onClickListener) {
         if (onClickListener != null) {
-            SvgaUtils.runOnUiThread(() -> mCallbackMap.put(mActivity, onClickListener));
+            SvgaUtils.runOnUiThread(() -> {
+                if (mActivity != null) {
+                    mCallbackMap.put(mActivity, onClickListener);
+                }
+            });
+
         }
         return this;
     }
@@ -177,6 +180,7 @@ public class SvgaCreator implements SvgaCallback, LifecycleObserver {
     }
 
     private boolean isCanShowDialog() {
+        if (mActivity == null) return false;
         if (mSvgaQueue.isEmpty()) {
             return false;
         }

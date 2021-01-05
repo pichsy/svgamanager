@@ -18,7 +18,6 @@ import com.opensource.svgaplayer.SVGAImageView;
 import com.opensource.svgaplayer.SVGAParser;
 import com.opensource.svgaplayer.SVGAVideoEntity;
 
-import org.jetbrains.annotations.NotNull;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -130,7 +129,7 @@ public class SvgaDialog extends PopupWindow {
                 URL surl = new URL(this.mSvgUrl);
                 mSVGParser.decodeFromURL(surl, new SVGAParser.ParseCompletion() {
                     @Override
-                    public void onComplete(@NotNull SVGAVideoEntity svgaVideoEntity) {
+                    public void onComplete(SVGAVideoEntity svgaVideoEntity) {
                         mSVGImageView.setImageDrawable(new SVGADrawable(svgaVideoEntity));
                         mSVGImageView.setLoops(1);
                         mSVGImageView.startAnimation();
