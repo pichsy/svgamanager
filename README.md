@@ -1,3 +1,8 @@
+
+# 最新地址, 该项目已移到gitee
+# [https://gitee.com/pichs/svgamanager](https://gitee.com/pichs/svgamanager)
+
+
 # SvgaManager
 
 SvgaManager 基础Svga封装的管理类。
